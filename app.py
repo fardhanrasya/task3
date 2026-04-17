@@ -2,9 +2,6 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# ============================================================
-# Data produk awal (in-memory storage)
-# ============================================================
 products = [
     {
         "id": 1,
@@ -53,7 +50,7 @@ def get_product(product_id):
         return jsonify({
             "status": "error",
             "message": "Produk tidak ditemukan"
-        }), 200  # <-- seharusnya 404
+        }), 200 
 
     return jsonify({
         "status": "success",
@@ -67,7 +64,6 @@ def create_product():
     global next_id
     data = request.get_json()
 
-    # Validasi: semua field wajib diisi
     if not data:
         return jsonify({
             "status": "error",
@@ -101,14 +97,11 @@ def create_product():
             "message": "Field 'stock' harus berupa bilangan bulat"
         }), 400
 
-    # Validasi: stock tidak boleh negatif
     if data["stock"] < 0:
         return jsonify({
             "status": "error",
             "message": "Field 'stock' tidak boleh bernilai negatif"
         }), 400
-
-    # (!) Tidak ada validasi untuk price negatif di sini
 
     new_product = {
         "id": next_id,
@@ -124,7 +117,7 @@ def create_product():
         "status": "success",
         "message": "Produk berhasil ditambahkan",
         "data": new_product
-    }), 200  # <-- seharusnya 201
+    }), 200  
 
 
 @app.route("/api/products/<int:product_id>", methods=["PUT"])
@@ -145,7 +138,6 @@ def update_product(product_id):
             "message": "Request body tidak boleh kosong"
         }), 400
 
-    # Update field yang diberikan
     if "name" in data:
         product["name"] = data["name"]
     if "price" in data:
